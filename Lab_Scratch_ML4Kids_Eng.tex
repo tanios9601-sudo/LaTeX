@@ -1,0 +1,184 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{libertine}
+\usepackage{inconsolata}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{fancyhdr}
+
+\geometry{top=2.5cm, bottom=2.5cm, left=2.3cm, right=2.3cm}
+
+% Page style
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{AI and Scratch Lab}
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage}
+
+% Titles
+\definecolor{myblue}{RGB}{0,72,128}
+\titleformat{\section}{\normalfont\Large\bfseries\color{myblue}\scshape}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{myblue!80!black}}{\thesubsection}{1em}{}
+
+% Spacing
+\titlespacing*{\section}{0pt}{1.5em plus 0.5em}{1em}
+\titlespacing*{\subsection}{0pt}{1em plus 0.3em}{0.7em}
+
+% Listings style Scratch
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  backgroundcolor=\color{blue!2},
+  frame=single,
+  rulecolor=\color{gray!50},
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  keywordstyle=\color{blue!80!black}\bfseries,
+  showstringspaces=false,
+  literate={é}{{\'e}}1 {è}{{\`e}}1 {à}{{\`a}}1,
+  captionpos=b,
+  xleftmargin=15pt,
+  xrightmargin=15pt
+}
+
+% Advice box
+\newtcolorbox{conseilbox}{
+  colframe=blue!50,
+  colback=blue!5,
+  coltitle=blue!70!black,
+  fonttitle=\bfseries,
+  boxrule=0.5pt,
+  arc=2pt,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt,
+  before skip=12pt,
+  after skip=12pt,
+  title=Tip
+}
+
+\newcommand{\tick}{\textcolor{green!50!black}{\checkmark}\ }
+
+\title{\Huge \textbf{Lab Session} \\[0.3em]
+\Large Machine Learning for Kids and Scratch \\[0.5em]
+}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{tcolorbox}[colback=gray!5,colframe=gray!50!black,title=General Objective,fonttitle=\bfseries]
+In this lab session, you will use \textbf{Machine Learning for Kids} to create an artificial intelligence model capable of recognizing \textbf{images} or \textbf{sounds}, and then use this model in \textbf{Scratch} to make a character interactive.  
+
+\vspace{0.3cm}
+\noindent\textbf{Duration:} \textbf{1h30} \\
+\textbf{Tools:} \href{https://machinelearningforkids.co.uk/}{machinelearningforkids.co.uk}, Scratch
+\end{tcolorbox}
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\section*{Exercise 1 — Sun or Rain? (Recognizing Drawn Images)}
+
+\subsection*{Objective}
+Create a model that recognizes whether a drawing made with the mouse represents a sunny or rainy scene, and then make a Scratch character react accordingly.
+
+\subsection*{Steps}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=2em, itemsep=6pt]
+    \item Log in to \textbf{Machine Learning for Kids}.
+    \item Create a new \textbf{image} project with two labels:
+    \begin{itemize}[leftmargin=*, label=--]
+        \item \textbf{Sun}
+        \item \textbf{Rain}
+    \end{itemize}
+    \item For each label, draw about ten sketches with the mouse representing a sunny and a rainy scene.
+    \item Train your model with these drawings.
+    \item Test the model’s accuracy with new scenes.
+    \item Open Scratch and import the model.
+    \item In Scratch, create multiple \textbf{backdrops} representing a sunny and a rainy scene.
+    \item Program the following logic to make the character react:
+\end{enumerate}
+
+\vspace{0.3cm}
+\noindent\textbf{Example Scratch Script:}
+
+\begin{lstlisting}
+when green flag clicked
+    if <backdrop = [Sun]> then
+        say [What a beautiful sunny day!] for 2 seconds
+    else if <backdrop = [Rain]> then
+        say [Don't forget your umbrella!] for 2 seconds
+\end{lstlisting}
+
+\vspace{0.3cm}
+\textit{Note:}  
+The goal is to practice creating and training an AI model from your own drawings. This encourages creativity and makes data collection easier.
+
+\noindent\rule{\linewidth}{0.4pt}
+
+\section*{Exercise 2 — DJ Party (Sound Recognition)}
+
+\subsection*{Objective}
+Create a model that understands three voice commands, and use Scratch to simulate a mini party.
+
+\subsection*{Steps}
+
+\begin{enumerate}[label=\textbf{\arabic*.}, leftmargin=2em, itemsep=6pt]
+    \item In Machine Learning for Kids, create an \textbf{audio} project with 3 labels:
+    \begin{itemize}[leftmargin=*, label=\tick]
+        \item \textbf{Music}
+        \item \textbf{Dance}
+        \item \textbf{Stop}
+    \end{itemize}
+    \item Record about 10 examples of your voice for each word.
+    \item Train the model.
+    \item Test that it correctly recognizes each command.
+    \item In Scratch:
+    \begin{itemize}[leftmargin=*, label=\tick]
+        \item When the word \textbf{Music} is detected:
+        \begin{itemize}[leftmargin=*, label=--]
+            \item Start playing music.
+            \item Change the backdrop (party).
+        \end{itemize}
+        \item When \textbf{Dance} is detected:
+        \begin{itemize}[leftmargin=*, label=--]
+            \item Switch the character’s costumes.
+            \item Apply a color effect.
+        \end{itemize}
+        \item When \textbf{Stop} is detected:
+        \begin{itemize}[leftmargin=*, label=--]
+            \item Stop the music.
+            \item Return to the initial backdrop.
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\begin{conseilbox}
+To go further, you can:  
+\begin{itemize}[leftmargin=*, label=\tick]
+    \item Add counters for each recognized command.  
+    \item Implement confirmation for the “Stop” command (e.g., say “Stop” twice).  
+    \item Synchronize costume changes with visual effects.  
+\end{itemize}
+
+\textit{Bonus:} add sounds or lighting effects if you have time.
+\end{conseilbox}
+
+\vfill
+\begin{center}
+    \textbf{Enjoy your Lab!}
+\end{center}
+
+\end{document}
