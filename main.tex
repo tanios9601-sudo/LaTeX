@@ -1,0 +1,310 @@
+\documentclass{beamer}
+%
+% Choose how your presentation looks.
+%
+% For more themes, color themes and font themes, see:
+% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
+%
+\mode<presentation>
+{
+  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
+  \usecolortheme{default} % or try albatross, beaver, crane, ...
+  \usefonttheme{default}  % or try serif, structurebold, ...
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+  \setbeamertemplate{footline}[frame number]
+} 
+
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+
+\title[Finer Model]{A Finer ALOHA-Based Analytical Model for
+LR-FHSS Performance Evaluation}
+\author{Tanios Bou Diwan}
+\institute{ESIB \& ULFG \MakeUppercase{\romannumeral 3}}
+\date{\today}
+\usepackage{graphicx}
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Uncomment these lines for an automatically generated outline.
+%\begin{frame}{Outline}
+%  \tableofcontents
+%\end{frame}
+
+%\section{System Model}
+
+\begin{frame}{System Model}
+
+\begin{itemize}
+
+\item Header success probability (single channel):
+\[
+p_{ok,H} = e^{-\left[2\lambda_H T_H + \lambda_P (T_H + T_P)\right]}
+\]
+
+\item Payload success probability (single channel):
+\[
+p_{ok,P} = e^{-\left[2\lambda_P T_P + \lambda_H (T_H + T_P)\right]}
+\]
+
+\item Header success probability with LR-FHSS hopping:
+\[
+p_{ok,H} = e^{-\frac{1}{C}\left[2\lambda_H T_H + \lambda_P (T_H + T_P)\right]}
+\]
+
+\item Payload success probability with LR-FHSS hopping:
+\[
+p_{ok,P} = e^{-\frac{1}{C}\left[2\lambda_P T_P + \lambda_H (T_H + T_P)\right]}
+\]
+
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}{System Model}
+\begin{itemize}
+
+\item Probability of receiving at least one Header replica:
+\[
+P_H = 1 - (1 - p_{ok,H})^{N_H}
+\]
+
+\item Probability of receiving \(k\) Payload fragments:
+\[
+p_{ok,P}(X = k) =
+\binom{N_P}{k}
+p_{ok,P}^{\,k}
+(1 - p_{ok,P})^{N_P-k}
+\]
+
+\item Probability of receiving at least \(CR \times N_P\) Payload fragments:
+\[
+P_P =
+\sum_{k = CR \times N_P}^{N_P}
+p_{ok,P}(X = k)
+\]
+
+\item Overall packet success probability:
+\[
+P_{\text{success}} = P_H \times P_P
+\]
+
+\item Expected number of successfully transmitted packets:
+\[
+N_{bTr} = \lambda N \, P_{\text{success}}
+\]
+
+\end{itemize}
+    
+\end{frame}
+
+\begin{frame}{Comparative Study}
+
+\begin{itemize}
+
+\item State-of-the-art models use the \textbf{balls-into-bins} (Classic Occupancy Problem).
+
+\item Success probability of a fragment:
+\[
+p_{ok} =
+\left(1 - \frac{1}{C}\right)^{A-1}
+\]
+
+\item Since the number of arrivals \(A\) is unknown, it is approximated by its expectation:
+
+\[
+p_{ok} =
+\left(\frac{C-1}{C}\right)^{E(A)-1}
+=
+\left(\frac{C-1}{C}\right)^{2\lambda T - 1}
+\]
+
+\item \textbf{Limitation:}
+For low traffic (\(2\lambda T < 1\)), the model can give
+\[
+p_{ok} > 1
+\]
+which is not valid for a probability.
+
+\end{itemize}
+    
+\end{frame}
+
+\section{Performance Evaluation}
+
+\begin{frame}{High-Density Scenarios}
+\begin{itemize}
+\item Simulation: 1h, devices generate 0.002 pkt/s (interarrival 500s), payload 10 bytes.
+\item DR8: 3 header replicas, 7 payload fragments.
+\item DR9: 2 header replicas, 4 payload fragments.
+\item Nodes scaled across 8 grids.
+\item \textbf{Observation:} DR8 performs best under moderate traffic.
+\item At ~60k nodes (high congestion): DR9 slightly better due to fewer fragments.
+\item Analytical model matches simulation: DR8 results align with MC²ABM and BBM.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{SoTA Vs. Proposed Model}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\textwidth]{SoTAvsPrposedModelFig1.png}
+\caption{Packet success rate of an LR-FHSS network}
+\end{figure}
+    
+\end{frame}
+
+\begin{frame}{Low-Density Scenarios}
+\begin{itemize}
+\item Simulation: 10h, each device sends a DR8 packet every 3h (\(\lambda = 10^{-4}\)).
+\item Tracked success rates of header and payload fragments.
+\item \textbf{Observation:} BBM fails:
+  \begin{itemize}
+  \item Collision probability \( x > 1 \) in worst cases.
+  \item High divergence from simulation in other cases.
+  \end{itemize}
+\item MC²ABM model aligns closely with simulation results.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{SoTA Vs. Proposed Model}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{Screenshot 2026-03-11 112244.png}
+\caption{Comparison of simulated and analytical fragment-level success rates in a low-traffic LR-FHSS network}
+\end{figure}
+    
+\end{frame}
+
+\begin{frame}{Robustness with Few Channels}
+\begin{itemize}
+\item Reduced physical channels from 35 to 3, traffic: 1 pkt / 400s.
+\item Simulation outcomes match MC²ABM predictions.
+\item BBM predictions unstable: fragment success probability > 1.
+\item Explains chaotic overall trend in low-channel scenarios.
+\item \textbf{Conclusion:} 
+  \begin{itemize}
+    \item BBM accurate in high-density but fragile in extreme conditions.
+    \item MC²ABM robust across all scenarios.
+  \end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}{SoTA Vs. Proposed Model}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{hani.png}
+\caption{Packet success rate vs. network size in 3-channel LR-FHSS}
+\end{figure}
+    
+\end{frame}
+
+\section{Parameters Optimization}
+
+\begin{frame}{Optimal Header Replicas}
+
+\begin{itemize}
+\item The proposed model allows finding the optimal value of a parameter analytically by differentiating the expected number of successful transmissions:
+\[
+N_{bTr} = f(N_H, N_P, N, \dots)
+\]
+
+\item Example: Optimal number of header replicas \(N_H\)
+  \begin{itemize}
+    \item Derivative \(\frac{d N_{bTr}}{d N_H}\) is complex (exponentials from Poisson probabilities)
+    \item Solved numerically → derivative vanishes at \(N_H = 3\)
+  \end{itemize}
+
+
+\item Approach can be extended to other parameters: \(N_P\), number of devices \(N\), etc., via derivative + root-finding.
+\end{itemize}
+
+\end{frame}
+
+\section{Limitations}
+
+\begin{frame}{Model Assumptions and Experiments}
+
+\begin{itemize}
+\item Analytical model assumes fragments belong to \textbf{independent Poisson flows}:
+  \begin{itemize}
+    \item Arrival rate = packet arrival rate × number of each fragment type.
+  \end{itemize}
+
+\item In reality, fragments are generated in \textbf{batches}:
+  \begin{itemize}
+    \item One packet → \(N_H\) headers + \(N_P\) payload fragments.
+    \item Fragments from the same packet cannot collide (device transmits one fragment at a time).
+  \end{itemize}
+
+\item Experiments conducted:
+  \begin{enumerate}
+    \item Fixed nodes \(N = 125\), vary packet generation rate \(\lambda\)
+    \item Fixed \(\lambda = 0.05\), vary number of nodes
+  \end{enumerate}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Observations and Limitations}
+
+\begin{itemize}
+\item Observations:
+  \begin{itemize}
+    \item Node-varying experiment → lower success rate (aligns with model assumptions)
+    \item \(\lambda\)-varying experiment → higher success rate (fragments from same node, limited by device transmission rate)
+  \end{itemize}
+
+\item \textbf{Main limitation:} 
+  \begin{itemize}
+    \item Model ignores batch arrivals and “no self-collision” property.
+    \item Under-predicts performance under heavy load.
+    \item Over-predicts under light load.
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+\item Presented a new analytical framework: \textbf{MC²ABM} (Multi-Class Multi-Channel ALOHA Based Model) for LR-FHSS networks.
+\item Addresses limitations of previous models:
+  \begin{itemize}
+    \item Overestimation of collision probabilities in worst-case scenarios.
+  \end{itemize}
+\item Key advantages:
+  \begin{itemize}
+    \item High accuracy across various network densities.
+    \item Outperforms existing models in precision.
+    \item Enables parameter optimization (e.g., number of header replicas) without costly experiments.
+  \end{itemize}
+\item \textbf{Future work:} Improve model accuracy and robustness; develop strategies for achieving target QoS in satellite communication scenarios.
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
