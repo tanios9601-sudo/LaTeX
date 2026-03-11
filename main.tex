@@ -1,310 +1,457 @@
-\documentclass{beamer}
-%
-% Choose how your presentation looks.
-%
-% For more themes, color themes and font themes, see:
-% http://deic.uab.es/~iblanes/beamer_gallery/index_by_theme.html
-%
-\mode<presentation>
-{
-  \usetheme{default}      % or try Darmstadt, Madrid, Warsaw, ...
-  \usecolortheme{default} % or try albatross, beaver, crane, ...
-  \usefonttheme{default}  % or try serif, structurebold, ...
-  \setbeamertemplate{navigation symbols}{}
-  \setbeamertemplate{caption}[numbered]
-  \setbeamertemplate{footline}[frame number]
-} 
 
-\usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
+\documentclass[10pt, letterpaper]{article}
 
-\title[Finer Model]{A Finer ALOHA-Based Analytical Model for
-LR-FHSS Performance Evaluation}
-\author{Tanios Bou Diwan}
-\institute{ESIB \& ULFG \MakeUppercase{\romannumeral 3}}
-\date{\today}
-\usepackage{graphicx}
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=2 cm, % seperation between body and page edge from the top
+    bottom=2 cm, % seperation between body and page edge from the bottom
+    left=2 cm, % seperation between body and page edge from the left
+    right=2 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging 
+]{geometry} % for adjusting page geometry
+\usepackage{titlesec} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{primaryColor}{RGB}{0, 79, 144} % define primary color
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{amsmath} % for math
+\usepackage[
+    pdftitle={Tanios Bou Diwan's CV},
+    pdfauthor={Tanios Bou Diwan},
+    pdfcreator={Tanios Bou Diwan},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref} % for links, metadata and bookmarks
+\usepackage[pscoord]{eso-pic} % for floating text on the page
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    % \usepackage[T1]{fontenc} % this breaks sb2nov
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+
+
+% Some settings:
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\pagestyle{empty} % no header or footer
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0cm} % set column seperation
+\makeatletter
+\let\ps@customFooterStyle\ps@plain % Copy the plain style to customFooterStyle
+\patchcmd{\ps@customFooterStyle}{\thepage}{
+    \color{gray}\textit{\small Tanios Bou Diwan - Page \thepage{} of \pageref*{LastPage}}
+}{}{} % replace number by desired string
+\makeatother
+\pagestyle{customFooterStyle}
+
+\titleformat{\section}{\needspace{4\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+
+\titlespacing{\section}{
+    % left space:
+    -1pt
+}{
+    % top space:
+    0.3 cm
+}{
+    % bottom space:
+    0.2 cm
+} % section title spacing
+
+\renewcommand\labelitemi{$\circ$} % custom bullet points
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0.2 cm + 0.00001 cm
+    }{
+        0.2 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\linespread{1.5}
+}{
+    \par\kern\topsep
+} % new environment for the header
+
+\newcommand{\placelastupdatedtext}{% \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \AddToShipoutPictureFG*{% Add <stuff> to current page foreground
+    \put(
+        \LenToUnit{\paperwidth-2 cm-0.2 cm+0.05cm},
+        \LenToUnit{\paperheight-1.0 cm}
+    ){\vtop{{\null}\makebox[0pt][c]{
+        \small\color{gray}\textit{Last updated in \today}\hspace{\widthof{Last updated in \today}}
+    }}}%
+  }%
+}%
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+
 \begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
 
-\begin{frame}
-  \titlepage
-\end{frame}
+    \placelastupdatedtext
+    \begin{header}
+        \textbf{\fontsize{24 pt}{24 pt}\selectfont Tanios Bou Diwan}
 
-% Uncomment these lines for an automatically generated outline.
-%\begin{frame}{Outline}
-%  \tableofcontents
-%\end{frame}
+        \vspace{0.3 cm}
 
-%\section{System Model}
+        \normalsize
+        \mbox{{\color{black}\footnotesize\faMapMarker*}\hspace*{0.13cm}Baabdat, Mount Lebanon}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{mailto:tanios.boudiwan@net.usj.edu.lb}{\color{black}{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}tanios.boudiwan@net.usj.edu.lb}}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{tel:+961 71 475 503}{\color{black}{\footnotesize\faPhone*}\hspace*{0.13cm}71 475 503}}%
+        \kern 0.25 cm%
+        
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{https://www.linkedin.com/in/taniosboudiwan/}{\color{black}{\footnotesize\faLinkedinIn}\hspace*{0.13cm}Tanios Bou Diwan}}%
+        \kern 0.25 cm%
+        
+    \end{header}
 
-\begin{frame}{System Model}
-
-\begin{itemize}
-
-\item Header success probability (single channel):
-\[
-p_{ok,H} = e^{-\left[2\lambda_H T_H + \lambda_P (T_H + T_P)\right]}
-\]
-
-\item Payload success probability (single channel):
-\[
-p_{ok,P} = e^{-\left[2\lambda_P T_P + \lambda_H (T_H + T_P)\right]}
-\]
-
-\item Header success probability with LR-FHSS hopping:
-\[
-p_{ok,H} = e^{-\frac{1}{C}\left[2\lambda_H T_H + \lambda_P (T_H + T_P)\right]}
-\]
-
-\item Payload success probability with LR-FHSS hopping:
-\[
-p_{ok,P} = e^{-\frac{1}{C}\left[2\lambda_P T_P + \lambda_H (T_H + T_P)\right]}
-\]
-
-\end{itemize}
+    \vspace{0.3 cm - 0.3 cm}
 
 
-\end{frame}
+    %\section{Resume}
 
-\begin{frame}{System Model}
-\begin{itemize}
 
-\item Probability of receiving at least one Header replica:
-\[
-P_H = 1 - (1 - p_{ok,H})^{N_H}
-\]
 
-\item Probability of receiving \(k\) Payload fragments:
-\[
-p_{ok,P}(X = k) =
-\binom{N_P}{k}
-p_{ok,P}^{\,k}
-(1 - p_{ok,P})^{N_P-k}
-\]
+        
+        %\begin{onecolentry}
+         %Computer and telecommunications engineering graduate with hands-on experience in IoT and wireless networks. Developed and implemented an examination platform at Javista, enabling students to continue their exams even in offline mode. Strong interest in IoT applications, connectivity solutions, %and data-driven innovation.
+        %\end{onecolentry}
 
-\item Probability of receiving at least \(CR \times N_P\) Payload fragments:
-\[
-P_P =
-\sum_{k = CR \times N_P}^{N_P}
-p_{ok,P}(X = k)
-\]
 
-\item Overall packet success probability:
-\[
-P_{\text{success}} = P_H \times P_P
-\]
-
-\item Expected number of successfully transmitted packets:
-\[
-N_{bTr} = \lambda N \, P_{\text{success}}
-\]
-
-\end{itemize}
     
-\end{frame}
 
-\begin{frame}{Comparative Study}
 
-\begin{itemize}
-
-\item State-of-the-art models use the \textbf{balls-into-bins} (Classic Occupancy Problem).
-
-\item Success probability of a fragment:
-\[
-p_{ok} =
-\left(1 - \frac{1}{C}\right)^{A-1}
-\]
-
-\item Since the number of arrivals \(A\) is unknown, it is approximated by its expectation:
-
-\[
-p_{ok} =
-\left(\frac{C-1}{C}\right)^{E(A)-1}
-=
-\left(\frac{C-1}{C}\right)^{2\lambda T - 1}
-\]
-
-\item \textbf{Limitation:}
-For low traffic (\(2\lambda T < 1\)), the model can give
-\[
-p_{ok} > 1
-\]
-which is not valid for a probability.
-
-\end{itemize}
+    \section{Education}
     
-\end{frame}
+         
 
-\section{Performance Evaluation}
 
-\begin{frame}{High-Density Scenarios}
-\begin{itemize}
-\item Simulation: 1h, devices generate 0.002 pkt/s (interarrival 500s), payload 10 bytes.
-\item DR8: 3 header replicas, 7 payload fragments.
-\item DR9: 2 header replicas, 4 payload fragments.
-\item Nodes scaled across 8 grids.
-\item \textbf{Observation:} DR8 performs best under moderate traffic.
-\item At ~60k nodes (high congestion): DR9 slightly better due to fewer fragments.
-\item Analytical model matches simulation: DR8 results align with MC²ABM and BBM.
-\end{itemize}
-\end{frame}
 
-\begin{frame}{SoTA Vs. Proposed Model}
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.7\textwidth]{SoTAvsPrposedModelFig1.png}
-\caption{Packet success rate of an LR-FHSS network}
-\end{figure}
+    \begin{twocolentry}{
+            
+            
+        \textit{Sept 2025 – July 2026}}
+            \textbf{Université Saint-Joseph de Beyrouth and Lebanese University}
+
+            \textit{Master in Telecoms, Networks and Security }
+        \end{twocolentry}
+         \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                
+                \item \textbf{Coursework:} Cryptography, Wireless Networks, Network Security, Machine Learning
+            \end{highlights}
+        \end{onecolentry}
+
+        \vspace{0.20 cm}
+        
+
+
+
+        
+        \begin{twocolentry}{
+            
+            
+        \textit{Sept 2020 – May 2025}}
+            \textbf{Université Saint-Joseph de Beyrouth}
+
+            \textit{BE in Computer and Communications Engineering}
+        \end{twocolentry}
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                
+                \item \textbf{Coursework:} Data Structures and Algorithms, Routing and Switching, Internet of Things
+            \end{highlights}
+        \end{onecolentry}
+        
+            
+
+        
+
+
+
     
-\end{frame}
+    \section{Experience}
 
-\begin{frame}{Low-Density Scenarios}
-\begin{itemize}
-\item Simulation: 10h, each device sends a DR8 packet every 3h (\(\lambda = 10^{-4}\)).
-\item Tracked success rates of header and payload fragments.
-\item \textbf{Observation:} BBM fails:
-  \begin{itemize}
-  \item Collision probability \( x > 1 \) in worst cases.
-  \item High divergence from simulation in other cases.
-  \end{itemize}
-\item MC²ABM model aligns closely with simulation results.
-\end{itemize}
-\end{frame}
+    \vspace{0.2 cm}
+         \begin{twocolentry}{
+        \textit{Mar Roukos}    
+            
+        \textit{Feb 2026 - Present}}
+            \textbf{Research Intern}
+            
+            
+            \textit{Université Saint-Joseph de Beyrouth and Université Paris-Saclay}
+        \end{twocolentry}
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+        
+            \begin{highlights}
+                \item Studying LR-FHSS with SIC, optimizing header replica distribution to improve reliability.
 
-\begin{frame}{SoTA Vs. Proposed Model}
-\begin{figure}
-\centering
-\includegraphics[width=0.9\textwidth]{Screenshot 2026-03-11 112244.png}
-\caption{Comparison of simulated and analytical fragment-level success rates in a low-traffic LR-FHSS network}
-\end{figure}
+
+                
+            \end{highlights}
+        \end{onecolentry}
+        
+        \vspace{0.2 cm}
+        \begin{twocolentry}{
+        \textit{Mar Roukos}    
+            
+        \textit{Feb 2025 – Present}}
+            \textbf{Lab Instructor}
+            
+            
+            \textit{ESIB - USJ}
+        \end{twocolentry}
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+        
+            \begin{highlights}
+                \item Provided support during lab sessions to ensure students stayed on track.
+                \item Guided students in networking tasks using equipment and GNS3.
+                
+            \end{highlights}
+        \end{onecolentry}
+        
+        %\vspace{0.2 cm}
+
+
     
-\end{frame}
 
-\begin{frame}{Robustness with Few Channels}
-\begin{itemize}
-\item Reduced physical channels from 35 to 3, traffic: 1 pkt / 400s.
-\item Simulation outcomes match MC²ABM predictions.
-\item BBM predictions unstable: fragment success probability > 1.
-\item Explains chaotic overall trend in low-channel scenarios.
-\item \textbf{Conclusion:} 
-  \begin{itemize}
-    \item BBM accurate in high-density but fragile in extreme conditions.
-    \item MC²ABM robust across all scenarios.
-  \end{itemize}
-\end{itemize}
-\end{frame}
-\begin{frame}{SoTA Vs. Proposed Model}
-\begin{figure}
-\centering
-\includegraphics[width=0.9\textwidth]{hani.png}
-\caption{Packet success rate vs. network size in 3-channel LR-FHSS}
-\end{figure}
+
+
+
+
+         \vspace{0.2 cm}
+
+         \begin{twocolentry}{
+        \textit{Sinn El Fil}    
+            
+        \textit{June 2024 – May 2025}}
+            \textbf{Internship, Part-Time and FYP}
+            
+            \textit{Javista}
+        \end{twocolentry}
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+        
+            \begin{highlights}
+                \item Preparation and development of my final year project in collaboration with Javista.
+                \item Introduction to Power Pages and development of custom plugins on Microsoft Power Platform.
+                \item Introduction to Microsoft PowerApps, Power Automate, and Dataverse environment.
+    \end{highlights}
+                
+            
+        \end{onecolentry}
+
+
+
+
+
+
+
+
+
+
+
+        
+
+        
+        %\vspace{0.2 cm}
+
+
+        
+
+       
+
+        %\vspace{0.2 cm}
+
+        \begin{twocolentry}{
+        \textit{Baabda}    
+            
+        \textit{June 2023}}
+            \textbf{Intern}
+            
+            \textit{Lebanese army}
+        \end{twocolentry}
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+        
+            \begin{highlights}
+                \item Completed training in Windows Server administration and basic IT infrastructure management.
+    \end{highlights}
+                
+            
+        \end{onecolentry}
+        
+
+        
+
+      
+        
+
+
+
     
-\end{frame}
-
-\section{Parameters Optimization}
-
-\begin{frame}{Optimal Header Replicas}
-
-\begin{itemize}
-\item The proposed model allows finding the optimal value of a parameter analytically by differentiating the expected number of successful transmissions:
-\[
-N_{bTr} = f(N_H, N_P, N, \dots)
-\]
-
-\item Example: Optimal number of header replicas \(N_H\)
-  \begin{itemize}
-    \item Derivative \(\frac{d N_{bTr}}{d N_H}\) is complex (exponentials from Poisson probabilities)
-    \item Solved numerically → derivative vanishes at \(N_H = 3\)
-  \end{itemize}
 
 
-\item Approach can be extended to other parameters: \(N_P\), number of devices \(N\), etc., via derivative + root-finding.
-\end{itemize}
 
-\end{frame}
-
-\section{Limitations}
-
-\begin{frame}{Model Assumptions and Experiments}
-
-\begin{itemize}
-\item Analytical model assumes fragments belong to \textbf{independent Poisson flows}:
-  \begin{itemize}
-    \item Arrival rate = packet arrival rate × number of each fragment type.
-  \end{itemize}
-
-\item In reality, fragments are generated in \textbf{batches}:
-  \begin{itemize}
-    \item One packet → \(N_H\) headers + \(N_P\) payload fragments.
-    \item Fragments from the same packet cannot collide (device transmits one fragment at a time).
-  \end{itemize}
-
-\item Experiments conducted:
-  \begin{enumerate}
-    \item Fixed nodes \(N = 125\), vary packet generation rate \(\lambda\)
-    \item Fixed \(\lambda = 0.05\), vary number of nodes
-  \end{enumerate}
-\end{itemize}
-
-\end{frame}
+    
+    \section{Projects}
 
 
-\begin{frame}{Observations and Limitations}
 
-\begin{itemize}
-\item Observations:
-  \begin{itemize}
-    \item Node-varying experiment → lower success rate (aligns with model assumptions)
-    \item \(\lambda\)-varying experiment → higher success rate (fragments from same node, limited by device transmission rate)
-  \end{itemize}
+        
+        \begin{twocolentry}{
+            
+            
+        \textit{\href{https://youtu.be/whQCqEG-JnA?si=icPk0lL6JHCcQdOs}{Youtube Video}}}
+            \textbf{LoRaWise Parking}
+        \end{twocolentry}
 
-\item \textbf{Main limitation:} 
-  \begin{itemize}
-    \item Model ignores batch arrivals and “no self-collision” property.
-    \item Under-predicts performance under heavy load.
-    \item Over-predicts under light load.
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item Development of a smart parking solution for a campus, utilizing LoRaWAN technology to provide real-time updates on parking space availability. Objective: to improve parking management and optimize utilization.
+                \item Tools Used: C++, Arduino
+            \end{highlights}
+        \end{onecolentry}
 
 
-\section{Conclusion}
+        \vspace{0.2 cm}
 
-\begin{frame}{Conclusion}
+  
 
-\begin{itemize}
-\item Presented a new analytical framework: \textbf{MC²ABM} (Multi-Class Multi-Channel ALOHA Based Model) for LR-FHSS networks.
-\item Addresses limitations of previous models:
-  \begin{itemize}
-    \item Overestimation of collision probabilities in worst-case scenarios.
-  \end{itemize}
-\item Key advantages:
-  \begin{itemize}
-    \item High accuracy across various network densities.
-    \item Outperforms existing models in precision.
-    \item Enables parameter optimization (e.g., number of header replicas) without costly experiments.
-  \end{itemize}
-\item \textbf{Future work:} Improve model accuracy and robustness; develop strategies for achieving target QoS in satellite communication scenarios.
-\end{itemize}
 
-\end{frame}
+        \begin{twocolentry}{
+
+}
+    \textbf{Power Exam}
+\end{twocolentry}
+
+
+        \vspace{0.10 cm}
+        \begin{onecolentry}
+            \begin{highlights}
+                \item 
+Design and implementation of a bilingual exam platform using Microsoft Power Platform, supporting online and offline exams, course management, and content translation. Objective: to support academic institutions in managing assessments and maintaining learning continuity.
+                \item Tools Used: Microsoft Power Platform
+            \end{highlights}
+        \end{onecolentry}
+
+
+        \vspace{0.2 cm}
+
+
+
+    
+    \section{Skills and Abilities}
+
+
+
+        
+        \begin{onecolentry}
+            \textbf{Programming Languages:} C++, Java, SQL, Python
+        \end{onecolentry}
+
+        \vspace{0.1 cm}
+
+        \begin{onecolentry}
+            \textbf{Technologies:} LoRaWAN, Arduino, MQTT,  Microsoft Power Platform
+        \end{onecolentry}
+        \vspace{0.1 cm}
+        \begin{onecolentry}
+            \textbf{Languages Spoken:} Arabic, French, English
+        \end{onecolentry}
+        \vspace{0.1 cm}
+        %\begin{onecolentry}
+            %\textbf{Hobbies:} Reading, Writing, History, Ping-Pong, Football, Hiking
+        %\end{onecolentry}
+        \begin{onecolentry}
+            \textbf{Certificates:} CCNA: Switching, Routing, and Wireless Essentials, CCNA: Introduction to Networks
+        \end{onecolentry}
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+    
 
 \end{document}
